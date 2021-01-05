@@ -1,18 +1,17 @@
-{{ $sections := where site.Sections "Section" "docs" }}
-{{ $here     := .here }}
+{{ $sections    := where site.Sections "Section" "docs" }}
+{{ $here        := .here }}
+{{ $docsVersion := .version }}
 <aside class="nav{{ if .drawer }} is-drawer{{ else }} is-sidebar{{ end }}">
   {{ if .drawer }}
-  <div class="button-container">
-    <a class="button is-borderless" id="drawer-close">
-      <span class="icon">
-        <ion-icon size="large" name="close-circle-outline"></ion-icon>
-      </span>
-    </a>
-  </div>
+  <span class="icon is-hoverable" @click="drawer = !drawer">
+    <ion-icon size="large" name="close-circle-outline"></ion-icon>
+  </span>
   {{ end }}
 
-  {{ with $sections }}
-  {{ range . }}
+  {{ range $sections }}
+  {{ range .Sections }}
+  {{ $version := index (split .File.Path "/") 1 }}
+  {{ if eq $version $docsVersion }} <!-- display only the current docs version -->
   {{ $isHere := eq $here .RelPermalink }}
   <div class="nav-section">
     <a class="nav-section-title{{ if $isHere }} is-active{{ end }}" href="{{ .RelPermalink }}">
@@ -33,8 +32,7 @@
     {{ end }}
   </div>
 
-  {{ with .Sections }}
-  {{ range . }}
+  {{ range .Sections }}
   {{ $isHere := eq $here .RelPermalink }}
   <div class="nav-section">
     <a class="nav-section-title{{ if $isHere }} is-active{{ end }}" href="{{ .RelPermalink }}">
